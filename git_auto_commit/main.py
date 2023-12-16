@@ -93,11 +93,23 @@ def parse_diff_output(diff_output, max_line_length=80, max_characters_length=150
             file_diffs[current_file].append((index, truncate_line(line)))
 
     for file, lines_with_indices in file_diffs.items():
-        prioritized_lines = [(index, line) for index, line in lines_with_indices if line.startswith(('+', '-'))]
-        other_lines = [(index, line) for index, line in lines_with_indices if not line.startswith(('+', '-'))]
+        prioritized_lines = [
+            (index, line)
+            for index, line in lines_with_indices
+            if line.startswith(("+", "-"))
+        ]
+        other_lines = [
+            (index, line)
+            for index, line in lines_with_indices
+            if not line.startswith(("+", "-"))
+        ]
 
-        sampled_prioritized_lines = sample_lines(prioritized_lines, max_characters_length)
-        remaining_length = max_characters_length - sum(len(line[1]) + 1 for line in sampled_prioritized_lines)
+        sampled_prioritized_lines = sample_lines(
+            prioritized_lines, max_characters_length
+        )
+        remaining_length = max_characters_length - sum(
+            len(line[1]) + 1 for line in sampled_prioritized_lines
+        )
 
         if remaining_length > 0:
             sampled_other_lines = sample_lines(other_lines, remaining_length)
@@ -135,6 +147,7 @@ def generate_commit_message(aws_profile_name, region_name, model_id):
 
     output = llm_chain.run(diff_output)
     return parser.parse(output).message
+
 
 def filter_commit_args(args):
     """Filter out '-m', '--message', '--profile', '--region', and '--model' parameters and throw an error if '-m' or '--message' are found."""

@@ -8,7 +8,6 @@ class PostInstallCommand(install):
 
     def run(self):
         install.run(self)
-        # Call your function here
         set_git_alias()
 
 
@@ -26,11 +25,11 @@ setup(
     name="git_auto_commit",
     version="0.1.0",
     author="Gianluigi Mucciolo",
-    author_email="your_email@example.com",  # Replace with your email
+    author_email="g.mucciolo91@gmail.com",
     description="A Git extension to automatically generate commit messages.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/git_auto_commit",  # Replace with the URL of your project
+    url="https://github.com/ggiallo28/git-auto-commit",
     packages=find_packages(),
     cmdclass={
         "install": PostInstallCommand,
