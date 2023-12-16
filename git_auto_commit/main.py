@@ -89,19 +89,19 @@ def parse_diff_output(diff_output, max_line_length=80, max_characters_length=150
         if file_match:
             current_file = file_match.group(1)
             file_diffs[current_file] = []
-        elif current_file and change_pattern.match(line):
+        elif current_file:
             file_diffs[current_file].append((index, truncate_line(line)))
 
     for file, lines_with_indices in file_diffs.items():
         prioritized_lines = [
             (index, line)
             for index, line in lines_with_indices
-            if line.startswith(("+", "-"))
+            if change_pattern.match(line)
         ]
         other_lines = [
             (index, line)
             for index, line in lines_with_indices
-            if not line.startswith(("+", "-"))
+            if not change_pattern.match(line)
         ]
 
         sampled_prioritized_lines = sample_lines(
