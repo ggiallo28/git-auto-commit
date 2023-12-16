@@ -29,9 +29,11 @@ template = """
 Context: As an AI trained in the Conventional Commits specification, your role is to analyze code changes and craft commit messages. 
 These messages should be succinct, clear, and adhere to the structured Conventional Commits format.
 
-Input Git Diff: [[{git_diff}]]
+Input Git Diff: << EOF 
+{git_diff}
+EOF
 
-Task: Examine the Git diff between [[]] to pinpoint significant modifications. Concentrate on:
+Task: Examine the Git diff enclosed within the EOF markers to pinpoint significant modifications. Concentrate on:
 1. File Status: Look for files that are either modified, added, or deleted. If applicable, mention the scope for additional context.
 2. Nature of Changes: Identify the core changes in the code. This could include new features, bug fixes, refactoring, etc. 
    Specify the change type (e.g., feat, fix, docs, style, refactor, perf, test, chore).
@@ -39,6 +41,7 @@ Task: Examine the Git diff between [[]] to pinpoint significant modifications. C
 
 Output: Craft a Commit Message following the template:
 {{"message": "Your commit message here"}}
+
 Note: The message should start without a capital letter and not end with a period.
 
 Provide ONLY the message that describe the main purpose and impact of the changes.
