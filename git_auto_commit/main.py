@@ -61,7 +61,7 @@ def read_git_diff(lines_of_context=LINES_OF_CONTEXT):
         return f"Unexpected error: {e}"
 
 
-def parse_diff_output(diff_output, max_line_length=80, max_characters_length=1500):
+def parse_diff_output(diff_output, max_line_length=80, max_characters_length=2000):
     file_diffs = {}
     file_pattern = re.compile(FILE_PATTERN, re.MULTILINE)
     change_pattern = re.compile(CHANGE_PATTERN)
