@@ -137,9 +137,14 @@ def generate_commit_message(aws_profile_name, region_name, model_id):
         credentials_profile_name=aws_profile_name,
         region_name=region_name,
         model_id=model_id,
+        model_kwargs = {
+            "max_tokens": 100,
+            "temperature": 0.75
+        } 
     )
 
-    print(prompt.format(git_diff=diff_output))
+    actual_prompt = prompt.format(git_diff=diff_output)
+    print(actual_prompt, "Num Tokens:", llm.get_num_tokens(actual_prompt))
 
     llm_chain = LLMChain(llm=llm, prompt=prompt)
 
