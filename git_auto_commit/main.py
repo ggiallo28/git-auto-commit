@@ -37,6 +37,7 @@ EOF
 Task: Examine the Git diff enclosed within the EOF markers to pinpoint significant modifications. Concentrate on:
 1. File Status: Look for files that are either modified, added, or deleted. If applicable, mention the scope for additional context.
 2. Nature of Changes: Identify the core changes in the code. This could include new features, bug fixes, refactoring, etc. 
+   Specify the change type (e.g., feat, fix, docs, style, refactor, perf, test, chore).
 3. Dependency and Structure Changes: Note any alterations in dependencies or overall structural changes.
 
 Output: Craft a Commit Message following the template:
@@ -150,7 +151,7 @@ def generate_commit_message(aws_profile_name, region_name, model_id):
         message = parser.parse(output).message
     except:
         new_parser = OutputFixingParser.from_llm(parser=parser, llm=llm)
-        message = new_parser.parse(output)
+        message = new_parser.parse(output).message
     return message
 
 
