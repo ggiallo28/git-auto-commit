@@ -9,6 +9,7 @@ from langchain.chains import LLMChain
 from langchain.llms import Bedrock
 from langchain.prompts import PromptTemplate
 from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain.output_parsers import OutputFixingParser
 
 AWS_DEFAULT_PROFILE = "default"
 AWS_DEFAULT_REGION_NAME = "us-east-1"
@@ -36,7 +37,6 @@ EOF
 Task: Examine the Git diff enclosed within the EOF markers to pinpoint significant modifications. Concentrate on:
 1. File Status: Look for files that are either modified, added, or deleted. If applicable, mention the scope for additional context.
 2. Nature of Changes: Identify the core changes in the code. This could include new features, bug fixes, refactoring, etc. 
-   Specify the change type (e.g., feat, fix, docs, style, refactor, perf, test, chore).
 3. Dependency and Structure Changes: Note any alterations in dependencies or overall structural changes.
 
 Output: Craft a Commit Message following the template:
@@ -61,7 +61,7 @@ def read_git_diff(lines_of_context=LINES_OF_CONTEXT):
         return f"Unexpected error: {e}"
 
 
-def parse_diff_output(diff_output, max_line_length=80, max_characters_length=2000):
+def parse_diff_output(diff_output, max_line_length=80, max_characters_length=2100):
     file_diffs = {}
     file_pattern = re.compile(FILE_PATTERN, re.MULTILINE)
     change_pattern = re.compile(CHANGE_PATTERN)
@@ -146,7 +146,12 @@ def generate_commit_message(aws_profile_name, region_name, model_id):
         diff_output = parse_diff_output(diff_output)
 
     output = llm_chain.run(diff_output)
-    return parser.parse(output).message
+    try:
+        message = parser.parse(output).message
+    except:
+        new_parser = OutputFixingParser.from_llm(parser=parser, llm=llm)
+        message = new_parser.parse(output)
+    return message
 
 
 def filter_commit_args(args):
